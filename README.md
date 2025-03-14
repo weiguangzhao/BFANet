@@ -6,11 +6,11 @@
 Backbones
 - [x] Support OctFomer backbone;
 - [x] Support MinkowskiEngine backbone;
-- [x] Support PTv3 backbone;
+- [ ] Support PTv3 backbone;
 
 Datasets
 - [x] Support ScanNetv2 Dataset;
-- [x] Support ScanNet200 Dataset;
+- [ ] Support ScanNet200 Dataset;
 - [ ] Support ScanNet++ Dataset;
 - [ ] Support S3DIS Dataset;
 - [ ] Support SemanticKITTI Dataset;
@@ -105,6 +105,10 @@ BFANet
     cd BFANet
     export PYTHONPATH=./
     python datasets/ScanNetv2/data_decode.py
+
+## Environments
+    cd BFANet
+    python train.py
 
 
 ## Citation
