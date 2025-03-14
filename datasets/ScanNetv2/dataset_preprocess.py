@@ -1,6 +1,5 @@
 # _*_coding : UTF-8_*_
 # Code writer: Weiguang.Zhao
-# Writing time: 2021/6/29  下午1:50
 # File Name: dataset_preprocess.py
 # IDE: PyCharm
 
@@ -51,11 +50,11 @@ class Dataset:
         self.ChromaticJitter = aug_transform.ChromaticJitter(p=0.95, std=0.05)
         self.NormalizeColor = aug_transform.NormalizeColor()
 
-        self.train_aug_compose = aug_transform.Compose([self.CenterShift, self.RandomDropout, self.SphereCrop,
+        self.train_aug_compose = aug_transform.Compose([self.CenterShift, self.RandomDropout,
                                                         self.RandomRotate_z, self.RandomRotate_y, self.RandomRotate_x,
-                                                        self.RandomScale, self.RandomFlip, self.ElasticDistortion,
+                                                        self.RandomScale, self.RandomFlip, self.RandomJitter, self.ElasticDistortion,
                                                         self.ChromaticAutoContrast, self.ChromaticTranslation,
-                                                        self.ChromaticJitter, self.NormalizeColor, self.CenterShift])
+                                                        self.ChromaticJitter, self.SphereCrop, self.NormalizeColor, self.CenterShift])
         self.val_aug_compose = aug_transform.Compose([self.CenterShift, self.NormalizeColor, self.RandomRotate_z, self.CenterShift])
 
         self.dataset_root = 'datasets'
@@ -71,8 +70,6 @@ class Dataset:
         self.val_file_list.sort()
         self.test_file_list.sort()
 
-        # ####FOR LONG TRAINING
-        # self.train_file_list = np.repeat(self.train_file_list, 4, axis=0)
 
     def trainLoader(self):
         train_set = list(range(len(self.train_file_list)))
@@ -126,10 +123,10 @@ class Dataset:
                 normal = SA.attach("shm://v2_{}_normal".format(fn)).copy()
                 segment = SA.attach("shm://v2_{}_segment".format(fn)).copy()
             else:
-                coord = np.load(self.npy_dir + 'train/{}/coord.npy'.format(fn))
-                color = np.load(self.npy_dir + 'train/{}/color.npy'.format(fn))
-                normal = np.load(self.npy_dir + 'train/{}/normal.npy'.format(fn))
-                segment = np.load(self.npy_dir + 'train/{}/segment.npy'.format(fn))[:, 0]
+                coord = np.load(self.npy_dir + 'train/{}_coord.npy'.format(fn))
+                color = np.load(self.npy_dir + 'train/{}_color.npy'.format(fn))
+                normal = np.load(self.npy_dir + 'train/{}_normal.npy'.format(fn))
+                segment = np.load(self.npy_dir + 'train/{}_segment.npy'.format(fn))
                 pass
 
             file_name.append(self.train_file_list[idx])
@@ -225,11 +222,11 @@ class Dataset:
                 segment = SA.attach("shm://v2_{}_segment".format(fn)).copy()
                 superpoint = SA.attach("shm://v2_{}_superpoint".format(fn)).copy()
             else:
-                coord = np.load(self.npy_dir + 'train/{}/coord.npy'.format(fn))
-                color = np.load(self.npy_dir + 'train/{}/color.npy'.format(fn))
-                normal = np.load(self.npy_dir + 'train/{}/normal.npy'.format(fn))
-                segment = np.load(self.npy_dir + 'train/{}/segment.npy'.format(fn))[:, 0]
-                superpoint = np.load(self.npy_dir + 'train/{}/superpoint.npy'.format(fn))
+                coord = np.load(self.npy_dir + 'train/{}_coord.npy'.format(fn))
+                color = np.load(self.npy_dir + 'train/{}_color.npy'.format(fn))
+                normal = np.load(self.npy_dir + 'train/{}_normal.npy'.format(fn))
+                segment = np.load(self.npy_dir + 'train/{}_segment.npy'.format(fn))
+                superpoint = np.load(self.npy_dir + 'train/{}_superpoint.npy'.format(fn))
                 pass
 
             file_name.append(self.val_file_list[idx])
@@ -363,15 +360,13 @@ class Dataset:
         # #### retrun
         if self.backbone == "octformer":
             inbox_mask = torch.cat(inbox_mask_list, 0)
-            return {'fn': file_name, 'xyz_original': xyz_original,
-                    'batch_offset': batch_offset,
+            return {'fn': file_name, 'xyz_original': xyz_original,'batch_offset': batch_offset,
                     'sup': superpoint, 'points': points_list, 'inbox_mask': inbox_mask}
 
         elif self.backbone == "mink":
             xyz_voxel_batch, feat_voxel_batch = ME.utils.sparse_collate(xyz_voxel, feat_voxel)
             v2p_index_batch = torch.cat(v2p_index_batch, 0).to(torch.int64)
-            return {'fn': file_name, 'xyz_original': xyz_original,
-                    'batch_offset': batch_offset,
+            return {'fn': file_name, 'xyz_original': xyz_original,'batch_offset': batch_offset,
                     'sup': superpoint, 'xyz_voxel': xyz_voxel_batch, 'feat_voxel': feat_voxel_batch,
                     'v2p_index': v2p_index_batch}
 

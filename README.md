@@ -42,7 +42,7 @@ Further OctFormer information can be found in [OctFormer](https://github.com/oct
 ```
 cd segmentator
 cd csrc && mkdir build && cd build
-conda install cmake cudnn
+conda install cmake==3.26.4 cudnn
 
 cmake .. \
 -DCMAKE_PREFIX_PATH=`python -c 'import torch;print(torch.utils.cmake_prefix_path)'` \
@@ -100,11 +100,11 @@ BFANet
 │   │   │   ├── [scene_id]_vh_clean_2.ply 
 │   │   ├── scannetv2-labels.combined.tsv
 ```
-(3) Decode the files to the "BFANet/datasets/ScanNetv2/npy/", if you don't want to use shared memory, please set the "use_shm_flag" as False in "BFANet/datasets/ScanNetv2/create_shm.py" 
+(3) Decode the files to the "BFANet/datasets/ScanNetv2/npy/", if you don't want to use shared memory, please set the "use_shm_flag" as False in "BFANet/datasets/ScanNetv2/data_decode.py" 
     
     cd BFANet
     export PYTHONPATH=./
-    python datasets/ScanNetv2/create_shm.py
+    python datasets/ScanNetv2/data_decode.py
 
 
 ## Citation
