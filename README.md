@@ -114,10 +114,11 @@ BFANet
 ## Citation
 If you find this work useful in your research, please cite:
 ```
-@inproceedings{zhao2025BFANet,
+@inproceedings{zhao2025bfanet,
   title={BFANet: Revisiting 3D Semantic Segmentation with Boundary Feature Analysis},
   author={Zhao, Weiguang and Zhang, Rui and Wang, Qiufeng and Cheng, Guangliang and Huang, Kaizhu},
-  booktitle={Proceedings of the IEEE/CVF Conference on Computer Vision and Pattern Recognition (CVPR)},
+  booktitle={Proceedings of the Computer Vision and Pattern Recognition Conference (CVPR)},
+  pages={29395--29405},
   year={2025}
 }
 ```
